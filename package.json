@@ -1,0 +1,36 @@
+{
+    "name": "svelte-app",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w",
+        "start": "sirv public --no-clear",
+        "prettier": "prettier --ignore-path .gitignore -c **/*.json",
+        "prettier-fix": "prettier --ignore-path .gitignore -w **/*.json",
+        "stylelint": "stylelint --ignore-pattern .gitignore **/*.css",
+        "stylelint-fix": "stylelint --fix --ignore-pattern .gitignore **/*.css",
+        "eslint": "eslint --ignore-pattern .gitignore **/*.js",
+        "eslint-fix": "eslint --fix --ignore-pattern .gitignore **/*.js"
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^17.0.0",
+        "@rollup/plugin-node-resolve": "^11.0.0",
+        "rollup": "^2.3.4",
+        "rollup-plugin-css-only": "^3.1.0",
+        "rollup-plugin-livereload": "^2.0.0",
+        "rollup-plugin-svelte": "^7.0.0",
+        "rollup-plugin-terser": "^7.0.0",
+        "svelte": "^3.0.0"
+    },
+    "dependencies": {
+        "eslint": "^8.6.0",
+        "eslint-config-standard": "^16.0.3",
+        "eslint-plugin-sonarjs": "^0.11.0",
+        "husky": "^7.0.4",
+        "prettier": "^2.5.1",
+        "sirv-cli": "^1.0.0",
+        "stylelint": "^14.2.0",
+        "stylelint-config-standard": "^24.0.0"
+    }
+}
