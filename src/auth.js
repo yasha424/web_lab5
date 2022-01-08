@@ -27,7 +27,6 @@ async function loginWithPopup (client, options) {
 }
 
 function logout (client) {
-    // is_auth.set(false);
     return client.logout();
 }
 

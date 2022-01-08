@@ -1,5 +1,3 @@
-// import { gql } from '@apollo/client'
-
 export class QUERIES {
     static QUERY_Get_All = () => `
         query MyQuery {

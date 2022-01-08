@@ -26,7 +26,7 @@
 	onMount(async () => {
 		auth0Client = await auth.createClient();
 		is_auth.set(await auth0Client.isAuthenticated());
-		const access_token= await auth0Client.getIdTokenClaims();
+		const access_token = await auth0Client.getIdTokenClaims();
 
 		if (access_token) {
 			token.set(access_token.__raw);
@@ -89,7 +89,7 @@
 	{#if !$is_auth}
 		<button on:click={login}>Login</button>
 	{:else}
-	<button on:click={logout}>Logout</button>
+		<button on:click={logout}>Logout</button>
 		<div class="input_block">
 			<input placeholder="Name" id="name">
 			<input placeholder="Director" id="director">
@@ -115,7 +115,7 @@
 					<td>{movie.director}</td>
 					<td>{movie.budget}</td>
 					<td>{movie.gross}</td>
-					</tr>
+				</tr>
 			{/each}
 		</table>
 	{/if}
