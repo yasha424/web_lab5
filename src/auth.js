@@ -13,9 +13,6 @@ async function loginWithPopup (client, options) {
     popup_open.set(true);
     try {
         await client.loginWithPopup(options);
-        // await client.loginWithRedirect({
-        //     redirect_uri: window.location.origin
-        // });
         user.set(await client.getUser());
         const access_token = await client.getIdTokenClaims();
         if (access_token) {
@@ -31,7 +28,7 @@ async function loginWithPopup (client, options) {
 }
 
 function logout (client) {
-    is_auth.set(false);
+    // is_auth.set(false);
     return client.logout();
 }
 
