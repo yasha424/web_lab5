@@ -1,5 +1,6 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
 import { user, is_auth, popup_open, token } from './store';
+import config from './auth-config';
 
 async function createClient () {
     return await createAuth0Client({
@@ -12,9 +13,14 @@ async function loginWithPopup (client, options) {
     popup_open.set(true);
     try {
         await client.loginWithPopup(options);
+        // await client.loginWithRedirect({
+        //     redirect_uri: window.location.origin
+        // });
         user.set(await client.getUser());
         const access_token = await client.getIdTokenClaims();
-        token.set(access_token.__raw);
+        if (access_token) {
+            token.set(access_token.__raw);
+        }
         is_auth.set(true);
     } catch (e) {
         console.error(e);
@@ -25,6 +31,7 @@ async function loginWithPopup (client, options) {
 }
 
 function logout (client) {
+    is_auth.set(false);
     return client.logout();
 }
 

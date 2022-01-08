@@ -13,6 +13,7 @@
         "semi": 0,
         "indent": ["error", 4],
         "camelcase": "off",
-        "no-undef": "off"
+        "no-undef": "off",
+        "no-unused-vars": "off"
     }
 }
