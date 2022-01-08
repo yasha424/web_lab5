@@ -11,6 +11,8 @@
     "rules": {
         "quotes": ["error", "single"],
         "semi": 0,
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "camelcase": "off",
+        "no-undef": "off"
     }
 }
