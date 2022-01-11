@@ -5,6 +5,8 @@
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import auth from './auth';
+	import { Stretch } from 'svelte-loading-spinners';
+
 
 	window.onload = async () => {
 		if (get(is_auth)) {
