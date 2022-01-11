@@ -1,12 +1,19 @@
 <script>
 	import RequestHelper from './helpers/request-helper';
 	import { QUERIES } from './helpers/queries';
-	import { movies, token, is_auth, user } from './store';
+	import { movies, token, is_auth, user, is_online } from './store';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import auth from './auth';
 	import { Stretch } from 'svelte-loading-spinners';
 
+	window.onoffline = () => {
+		is_online.set(false);
+	};
+
+	window.ononline = () => {
+		is_online.set(true);
+	};
 
 	window.onload = async () => {
 		if (get(is_auth)) {
@@ -16,7 +23,6 @@
 	}
 
 	token.subscribe(async (token_value) => {
-		console.log(token_value);
 		if (token_value !== "") {
 			const { movies_movies } = await RequestHelper.startFetchMyQuery(QUERIES.QUERY_Get_All());
 			movies.set(movies_movies);
@@ -36,8 +42,8 @@
 		user.set(await auth0Client.getUser());
 	});
 
-	function login() {
-		auth.loginWithPopup(auth0Client);
+	async function login() {
+		await auth.loginWithPopup(auth0Client);
 	}
 
 	function logout() {
@@ -46,23 +52,26 @@
 	}
 
 	const AddMovie = async () => {
-		if (is_auth) {
-			const name = document.getElementById('name').value;
-			const director = document.getElementById('director').value;
-			const budget = convertToNumber(document.getElementById('budget').value);
-			const gross = convertToNumber(document.getElementById('gross').value);
+		const name = document.getElementById('name').value;
+		const director = document.getElementById('director').value;
+		const budget = convertToNumber(document.getElementById('budget').value);
+		const gross = convertToNumber(document.getElementById('gross').value);
 
-			if (!name) {
-				return;
-			}
+		if (!name) {
+			return;
+		}
 
-			try {
-				const spinner = document.getElementById('spinner-item');
-				const res = await RequestHelper.startExecuteMyMutation(QUERIES.MUTATION_Insert(name, director, budget, gross));
-				movies.update(n => [...n, res.insert_movies_movies.returning[0]])
-			} catch (e) {
-				console.error(e);
-			}
+		try {
+			const spinner = document.getElementById('spinner');
+			spinner.style.display = 'block';
+
+			const res = await RequestHelper.startExecuteMyMutation(QUERIES.MUTATION_Insert(name,director, budget, gross));
+
+			spinner.style.display = 'none';
+
+			movies.update(n => [...n, res.insert_movies_movies.returning[0]])
+		} catch (e) {
+			console.error(e);
 		}
 	};
 
@@ -73,8 +82,13 @@
 				return;
 			}
 			try {
-				const spinner = document.getElementById('spinner-item');
+				const spinner = document.getElementById('spinner');
+				spinner.style.display = 'block';
+
 				const res = await RequestHelper.startExecuteMyMutation(QUERIES.MUTATION_Delete(title));
+
+				spinner.style.display = 'none';
+
 				movies.update(n => [...n.filter(item => item.title != title)]);
 			} catch (e) {
 				console.error(e);
@@ -88,7 +102,9 @@
 </script>
 
 <main>
-	{#if !$is_auth}
+	{#if !$is_online}
+		<div>Offline</div>
+	{:else if !$is_auth}
 		<button on:click={login}>Login</button>
 	{:else}
 		<button on:click={logout}>Logout</button>
@@ -120,7 +136,7 @@
 				</tr>
 			{/each}
 		</table>
-		<div class="spinner">
+		<div class="spinner" id="spinner">
 			<Stretch />
 		</div>
 	{/if}

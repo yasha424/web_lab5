@@ -16,7 +16,6 @@ class RequestHelper {
                 Authorization: `Bearer ${get(token)}`,
             },
         });
-        console.log(result.headers.Authorization);
         return await result.json();
     }
 
