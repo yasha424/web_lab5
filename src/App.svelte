@@ -1,31 +1,31 @@
 <script>
 	import RequestHelper from './helpers/request-helper';
 	import { QUERIES } from './helpers/queries';
-	import { movies, token, is_auth, user, is_online } from './store';
+	import { movies, token, is_auth, user, is_online, is_displayed } from './store';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
 	import auth from './auth';
 	import { Stretch } from 'svelte-loading-spinners';
 
 	window.onoffline = () => {
-		is_online.set(false);
+		$is_online = false;
 	};
 
 	window.ononline = () => {
-		is_online.set(true);
+		$is_online = true;
 	};
 
 	window.onload = async () => {
-		if (get(is_auth)) {
+		if ($is_auth) {
 			const { movies_movies } = await RequestHelper.startFetchMyQuery(QUERIES.QUERY_Get_All());
-			movies.set(movies_movies);
+			$movies = movies_movies;
 		}
 	}
 
 	token.subscribe(async (token_value) => {
 		if (token_value !== "") {
 			const { movies_movies } = await RequestHelper.startFetchMyQuery(QUERIES.QUERY_Get_All());
-			movies.set(movies_movies);
+			$movies = movies_movies;
 		}
 	});
 
@@ -33,13 +33,13 @@
 
 	onMount(async () => {
 		auth0Client = await auth.createClient();
-		is_auth.set(await auth0Client.isAuthenticated());
+		$is_auth = await auth0Client.isAuthenticated();
 		const access_token = await auth0Client.getIdTokenClaims();
 
 		if (access_token) {
-			token.set(access_token.__raw);
+			$token = access_token._raw;
 		}
-		user.set(await auth0Client.getUser());
+		$user = await auth0Client.getUser();
 	});
 
 	async function login() {
@@ -47,7 +47,7 @@
 	}
 
 	function logout() {
-		token.set('');
+		$token = '';
 		auth.logout(auth0Client);
 	}
 
@@ -62,12 +62,11 @@
 		}
 
 		try {
-			const spinner = document.getElementById('spinner');
-			spinner.style.display = 'block';
+			$is_displayed = true;
 
 			const res = await RequestHelper.startExecuteMyMutation(QUERIES.MUTATION_Insert(name,director, budget, gross));
 
-			spinner.style.display = 'none';
+			$is_displayed = false;
 
 			movies.update(n => [...n, res.insert_movies_movies.returning[0]])
 		} catch (e) {
@@ -82,12 +81,11 @@
 				return;
 			}
 			try {
-				const spinner = document.getElementById('spinner');
-				spinner.style.display = 'block';
+				$is_displayed = true;
 
 				const res = await RequestHelper.startExecuteMyMutation(QUERIES.MUTATION_Delete(title));
 
-				spinner.style.display = 'none';
+				$is_displayed = false;
 
 				movies.update(n => [...n.filter(item => item.title != title)]);
 			} catch (e) {
@@ -136,7 +134,7 @@
 				</tr>
 			{/each}
 		</table>
-		<div class="spinner" id="spinner">
+		<div class={$is_displayed ? "display_block" : "dislpay_none"}>
 			<Stretch />
 		</div>
 	{/if}
@@ -176,7 +174,11 @@ tr:nth-child(odd) {
 	background-color: var(--purple-color);
 }
 
-.spinner {
+.display_block {
+	display: block;
+}
+
+.dislpay_none {
 	display: none;
 }
 </style>

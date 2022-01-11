@@ -7,3 +7,4 @@ export const user = writable({});
 export const popup_open = writable(false);
 export const error = writable();
 export const is_online = writable(true);
+export const is_displayed = writable(false);
