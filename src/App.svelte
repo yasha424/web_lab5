@@ -118,6 +118,9 @@
 				</tr>
 			{/each}
 		</table>
+		<div class="spinner">
+			<Stretch />
+		</div>
 	{/if}
 </main>
 
@@ -153,5 +156,9 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
 	background-color: var(--purple-color);
+}
+
+.spinner {
+	display: none;
 }
 </style>
